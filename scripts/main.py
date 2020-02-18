@@ -27,7 +27,7 @@ class PyTanksIO:
 
 
 def main():
-    game = PyTanksIO(1024, 720, "PyTanksIO")
+    game = PyTanksIO(1024, 700, "PyTanksIO")
     game.start()
 
     while game.running:
