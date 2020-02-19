@@ -7,6 +7,7 @@ pygame.init()
 
 class PyTanksIO:
     def __init__(self, width, height, title):
+        # Window initializing code
         self.width = width
         self.height = height
         self.win = pygame.display.set_mode((width, height))
@@ -18,6 +19,7 @@ class PyTanksIO:
         self.background = (0, 0, 0)
 
     def start(self):
+        # Game initializing code
         self.ground = Ground(self.width, self.height)
 
     def logic(self):
