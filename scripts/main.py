@@ -1,3 +1,6 @@
+# CLASS IMPORTS
+from ground import Ground
+
 import pygame
 pygame.init()
 
@@ -15,19 +18,21 @@ class PyTanksIO:
         self.background = (0, 0, 0)
 
     def start(self):
-        pass
+        self.ground = Ground(self.width, self.height)
 
     def logic(self):
         pass
 
-    def render(self, window):
+    def render(self):
         self.win.fill(self.background)
+
+        self.ground.render(self.win)
 
         pygame.display.update()
 
 
 def main():
-    game = PyTanksIO(1024, 700, "PyTanksIO")
+    game = PyTanksIO(1024, 700, "PyTanks.io")
     game.start()
 
     while game.running:
@@ -38,7 +43,7 @@ def main():
                 game.running = False
 
         game.logic()
-        game.render(game.win)
+        game.render()
 
 
 if __name__ == "__main__":
