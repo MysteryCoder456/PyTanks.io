@@ -9,6 +9,7 @@ import pymunk.pygame_util
 
 # CLASS IMPORTS
 from ground import Ground
+from tank import Tank
 
 
 class PyTanksIO:
@@ -28,36 +29,42 @@ class PyTanksIO:
         # Pymunk initializing code
         pymunk.pygame_util.positive_y_is_up = False
         self.space = pymunk.Space()
-        self.space.gravity = 0, 100
+        self.space.gravity = 0, 500
 
-        # Game initializing code
+        # Create game objects
         self.ground = Ground(self.win_size[0], 150, self.win_size)
+        self.player1 = Tank("red")
+        self.player1.body._set_position((100, 250))
 
+        # Add game objects to space
         self.ground.add_to_space(self.space)
+        self.player1.add_to_space(self.space)
+
+
+
+    def input(self, keys):
+        p1_body = self.player1.body
+
+        speed = 40
+
+        if keys[pygame.K_d]:
+            p1_body.velocity = speed, p1_body.velocity[1]
+        elif keys[pygame.K_a]:
+            p1_body.velocity = -speed, p1_body.velocity[1]
+        else:
+            p1_body.velocity = 0, p1_body.velocity[1]
 
     def logic(self):
+        # print(self.player1.body.position)
         pass
 
     def render(self):
         self.win.fill(self.background)
 
+        self.player1.render(self.win)
         self.ground.render(self.win)
 
-        pygame.display.update()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        pygame.display.flip()
 
 
 def main():
@@ -78,8 +85,12 @@ def main():
             if event.type == pygame.QUIT:
                 return
 
+        game.input(pygame.key.get_pressed())
         game.logic()
         game.render()
+
+        delta_time = 1./fps
+        game.space.step(delta_time)
 
 
 if __name__ == "__main__":
