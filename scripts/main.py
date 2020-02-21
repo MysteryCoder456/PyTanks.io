@@ -46,6 +46,20 @@ class PyTanksIO:
         pygame.display.update()
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def main():
     """
     The main function that starts the entire game.
