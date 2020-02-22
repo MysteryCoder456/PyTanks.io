@@ -19,10 +19,13 @@ class Tank:
             (0, height)
         )
 
-        self.body = pymunk.Body(1, 1666, body_type=pymunk.Body.DYNAMIC)
+        mass = 10
+        self.body = pymunk.Body(mass, body_type=pymunk.Body.DYNAMIC)
+        self.body.moment = pymunk.moment_for_poly(mass, self.vertices)
+
         self.shape = pymunk.Poly(self.body, self.vertices)
         self.shape.elasticity = 0.3
-        # self.shape.friction = 0.7
+        self.shape.friction = 1.0
 
         if team == "red":
             self.color = (200, 40, 40)

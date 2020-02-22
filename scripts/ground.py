@@ -21,8 +21,8 @@ class Ground:
 
         self.body = pymunk.Body(body_type=pymunk.Body.STATIC)
         self.shape = pymunk.Poly(self.body, vertices)
-        self.shape.elasticity = 0.6
-        self.shape.friction = 0.4
+        self.shape.elasticity = 0.3
+        self.shape.friction = 0.7
 
         self.color = (0, 170, 0)
 

@@ -44,15 +44,13 @@ class PyTanksIO:
 
     def input(self, keys):
         p1_body = self.player1.body
+        speed = 25
 
-        speed = 40
-
-        if keys[pygame.K_d]:
-            p1_body.velocity = speed, p1_body.velocity[1]
-        elif keys[pygame.K_a]:
-            p1_body.velocity = -speed, p1_body.velocity[1]
-        else:
-            p1_body.velocity = 0, p1_body.velocity[1]
+        if p1_body.velocity[0] > 1:
+            if keys[pygame.K_d]:
+                p1_body.velocity += speed, 0
+            if keys[pygame.K_a]:
+                p1_body.velocity += -speed, 0
 
     def logic(self):
         # print(self.player1.body.position)
