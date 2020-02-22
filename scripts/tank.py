@@ -27,6 +27,8 @@ class Tank:
         self.shape.elasticity = 0.3
         self.shape.friction = 1.0
 
+        self.update_rect()
+
         if team == "red":
             self.color = (200, 40, 40)
         elif team == "blue":
@@ -35,7 +37,10 @@ class Tank:
     def add_to_space(self, space):
         space.add(self.body, self.shape)
 
-    def render(self, window):
+    def update_rect(self):
         pos = self.body.position
         size = self.vertices[2]
-        pygame.draw.rect(window, self.color, (pos[0], pos[1], size[0], size[1]))
+        self.rect = (pos[0], pos[1], size[0], size[1])
+
+    def render(self, window):
+        pygame.draw.rect(window, self.color, self.rect)
