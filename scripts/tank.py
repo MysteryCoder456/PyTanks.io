@@ -1,3 +1,4 @@
+from math import radians, sin, cos, ceil
 import pygame
 import pymunk
 
@@ -11,7 +12,10 @@ class Tank:
     """
 
     def __init__(self, team):
-        width, height = 36, 20  # Ratio = 9:5
+        # Size Ratio = 9:5
+        width = 23
+        height = width * 0.5555555556
+
         self.vertices = (
             (0, 0),
             (width, 0),
@@ -19,7 +23,7 @@ class Tank:
             (0, height)
         )
 
-        mass = 10
+        mass = width * 0.2777777778
         self.body = pymunk.Body(mass, body_type=pymunk.Body.DYNAMIC)
         self.body.moment = pymunk.moment_for_poly(mass, self.vertices)
         self.body.center_of_gravity = (width/2, height/2)
@@ -32,14 +36,18 @@ class Tank:
 
         if team == "red":
             self.color = (200, 40, 40)
-            self.direction = 0
+            self.direction = 135
         elif team == "blue":
             self.color = (40, 40, 200)
-            self.direction = 180
+            self.direction = -135
+        else:
+            self.color = (200, 200, 200)
+            self.direction = 0
 
+        self.turret_size = width * 0.6944444444
         self.score = 0
 
-    def turn_cannon(self, angle):
+    def turn_turret(self, angle):
         self.direction += angle
 
     def add_to_space(self, space):
@@ -51,4 +59,19 @@ class Tank:
         self.rect = (pos[0], pos[1], size[0], size[1])
 
     def render(self, window):
+        # Render Body
         pygame.draw.rect(window, self.color, self.rect)
+
+        # Render Turret
+        size = self.vertices[2]
+
+        start_pos = (
+            self.body.position[0] + size[0] / 2,
+            self.body.position[1]
+        )
+
+        end_pos = (
+            sin(radians(self.direction)) * self.turret_size + start_pos[0],
+            cos(radians(self.direction)) * self.turret_size + start_pos[1]
+        )
+        pygame.draw.line(window, (100, 100, 100), start_pos, end_pos, ceil(size[0]*0.1388888889))

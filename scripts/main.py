@@ -16,7 +16,6 @@ class PyTanksIO:
     """
     Main class that contains most of the code for the game
     """
-
     def __init__(self, width, height, title):
         # Window initializing code
         self.win_size = width, height
@@ -49,21 +48,23 @@ class PyTanksIO:
         self.player2.add_to_space(self.space)
 
     def input(self, keys):
-        p1_body = self.player1.body
-        p2_body = self.player2.body
-        speed = 100
+        tank = self.current_player
+        body = self.current_player.body
+        speed = Tank("ehhh").vertices[2][0] * 2.3333333333
+        rot_speed = 1
 
-        if p1_body.velocity[1] < 1:
-            if keys[pygame.K_d]:
-                p1_body.velocity = speed, p1_body.velocity[1]
-            if keys[pygame.K_a]:
-                p1_body.velocity = -speed, p1_body.velocity[1]
+        # Tank Movement
+        if body.velocity[1] < 1:
+            if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+                body.velocity = speed, body.velocity[1]
+            if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+                body.velocity = -speed, body.velocity[1]
 
-        if p2_body.velocity[1] < 1:
-            if keys[pygame.K_RIGHT]:
-                p2_body.velocity = speed, p2_body.velocity[1]
-            if keys[pygame.K_LEFT]:
-                p2_body.velocity = -speed, p2_body.velocity[1]
+        # Turret Rotation
+        if keys[pygame.K_q] or keys[pygame.K_COMMA]:
+            tank.turn_turret(rot_speed)
+        if keys[pygame.K_e] or keys[pygame.K_PERIOD]:
+            tank.turn_turret(-rot_speed)
 
     def logic(self):
         self.player1.update_rect()
@@ -72,9 +73,9 @@ class PyTanksIO:
     def render(self):
         self.win.fill(self.background)
 
+        self.ground.render(self.win)
         self.player1.render(self.win)
         self.player2.render(self.win)
-        self.ground.render(self.win)
 
         pygame.display.flip()
 
