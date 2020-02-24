@@ -32,8 +32,15 @@ class Tank:
 
         if team == "red":
             self.color = (200, 40, 40)
+            self.direction = 0
         elif team == "blue":
             self.color = (40, 40, 200)
+            self.direction = 180
+
+        self.score = 0
+
+    def turn_cannon(self, angle):
+        self.direction += angle
 
     def add_to_space(self, space):
         space.add(self.body, self.shape)

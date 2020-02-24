@@ -34,29 +34,46 @@ class PyTanksIO:
         # Create game objects
         self.ground = Ground(self.win_size[0], 150, self.win_size)
         self.player1 = Tank("red")
+        self.player2 = Tank("blue")
+
+        # Setup code
+        self.current_player = self.player1
+        self.moves_left = 2000
+
         self.player1.body._set_position((100, 250))
+        self.player2.body._set_position((width-136, 250))
 
         # Add game objects to space
         self.ground.add_to_space(self.space)
         self.player1.add_to_space(self.space)
+        self.player2.add_to_space(self.space)
 
     def input(self, keys):
         p1_body = self.player1.body
-        speed = 25
+        p2_body = self.player2.body
+        speed = 100
 
         if p1_body.velocity[1] < 1:
             if keys[pygame.K_d]:
-                p1_body.velocity += speed, 0
+                p1_body.velocity = speed, p1_body.velocity[1]
             if keys[pygame.K_a]:
-                p1_body.velocity += -speed, 0
+                p1_body.velocity = -speed, p1_body.velocity[1]
+
+        if p2_body.velocity[1] < 1:
+            if keys[pygame.K_RIGHT]:
+                p2_body.velocity = speed, p2_body.velocity[1]
+            if keys[pygame.K_LEFT]:
+                p2_body.velocity = -speed, p2_body.velocity[1]
 
     def logic(self):
         self.player1.update_rect()
+        self.player2.update_rect()
 
     def render(self):
         self.win.fill(self.background)
 
         self.player1.render(self.win)
+        self.player2.render(self.win)
         self.ground.render(self.win)
 
         pygame.display.flip()
