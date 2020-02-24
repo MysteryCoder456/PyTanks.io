@@ -22,6 +22,7 @@ class Tank:
         mass = 10
         self.body = pymunk.Body(mass, body_type=pymunk.Body.DYNAMIC)
         self.body.moment = pymunk.moment_for_poly(mass, self.vertices)
+        self.body.center_of_gravity = (width/2, height/2)
 
         self.shape = pymunk.Poly(self.body, self.vertices)
         self.shape.elasticity = 0.3

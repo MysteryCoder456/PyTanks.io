@@ -20,6 +20,8 @@ class Ground:
         ]
 
         self.body = pymunk.Body(body_type=pymunk.Body.STATIC)
+        self.body.center_of_gravity = (width/2, height/2)
+
         self.shape = pymunk.Poly(self.body, vertices)
         self.shape.elasticity = 0.3
         self.shape.friction = 0.7
