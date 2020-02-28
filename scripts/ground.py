@@ -6,8 +6,8 @@ class Ground:
     """Class for making the Ground/Terrain in the game
 
     Arguments:
-        window_width {int} -- Width of the game window
-        window_height {int} -- Height of the game window
+        window_width {int} -- Width of the game window.
+        window_height {int} -- Height of the game window.
     """
 
     def __init__(self, width, height, window_size):

@@ -30,12 +30,13 @@ class PyTanksIO:
         # Pymunk initializing code
         pymunk.pygame_util.positive_y_is_up = False
         self.space = pymunk.Space()
-        self.space.gravity = 0, 500
+        self.space.gravity = 0, 700
 
         # Create game objects
         self.ground = Ground(self.win_size[0], 150, self.win_size)
         self.player1 = Tank("red")
         self.player2 = Tank("blue")
+        self.bullets = []
 
         # Setup code
         self.current_player = self.player1
@@ -70,10 +71,27 @@ class PyTanksIO:
         if keys[pygame.K_e] or keys[pygame.K_PERIOD]:
             tank.turn_turret(-rot_speed)
 
+        # Firing
+        if keys[pygame.K_SPACE] and tank.fire_timer >= 100:
+            tank.fire_timer = 0
+            bullet = tank.shoot()
+            bullet.add_to_space(self.space)
+            self.bullets.append(bullet)
+
     def logic(self):
-        print(self.moves_left)
-        self.player1.update_rect()
-        self.player2.update_rect()
+
+        # Update Rects for rendering
+        self.player1.update()
+        self.player2.update()
+
+        for bullet in self.bullets:
+            if self.ground.rect.colliderect(bullet.rect):
+                bullet.body.velocity *= 0, 1
+
+            bullet.update()
+
+            if bullet.alive_time > 500:
+                self.bullets.remove(bullet)
 
     def render(self):
         self.win.fill(self.background)
@@ -83,11 +101,14 @@ class PyTanksIO:
         self.player1.render(self.win)
         self.player2.render(self.win)
 
+        for bullet in self.bullets:
+            bullet.render(self.win)
+
         # Render UI Elements
         text(
             self.win,
             "Player 1: " + str(self.player1.score),
-            25,
+            35,
             (255, 255, 255),
             (80, 30)
         )
@@ -95,7 +116,7 @@ class PyTanksIO:
         text(
             self.win,
             "Player 2: " + str(self.player2.score),
-            25,
+            35,
             (255, 255, 255),
             (self.win_size[0] - 80, 30)
         )

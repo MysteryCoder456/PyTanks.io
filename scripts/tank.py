@@ -1,14 +1,19 @@
-from math import radians, sin, cos, ceil
+from math import sin, cos, ceil
+from math import radians as rad
 import pygame
 import pymunk
+
+# CLASS AND FUNCTION IMPORTS
+from bullet import Bullet
+from text import text
 
 
 class Tank:
     """Class for creating a Tank
 
     Arguments:
-        pos {tuple} -- Starting position of the Tank
-        team {str} -- Team name of the Tank
+        pos {tuple} -- Starting position of the Tank.
+        team {str} -- Team name of the Tank.
     """
 
     def __init__(self, team):
@@ -23,16 +28,14 @@ class Tank:
             (0, height)
         )
 
-        mass = width * 0.2777777778
-        self.body = pymunk.Body(mass, body_type=pymunk.Body.DYNAMIC)
+        mass = width * 0.5555555556
+        self.body = pymunk.Body(mass)
         self.body.moment = pymunk.moment_for_poly(mass, self.vertices)
         self.body.center_of_gravity = (width/2, height/2)
 
         self.shape = pymunk.Poly(self.body, self.vertices)
         self.shape.elasticity = 0.3
         self.shape.friction = 1.0
-
-        self.update_rect()
 
         if team == "red":
             self.color = (200, 40, 40)
@@ -46,32 +49,64 @@ class Tank:
 
         self.turret_size = width * 0.6944444444
         self.score = 0
+        self.fire_timer = 0
+        self.fire_power = 100  # in percentage
+
+        self.update()
+
+    def shoot(self):
+        tank_size = self.vertices[2]
+        bullet_speed = self.fire_power * 8.5
+
+        start_pos = self.turret_end_pos
+        start_vel = (
+            sin(rad(self.direction)) * bullet_speed,
+            cos(rad(self.direction))*bullet_speed
+        )
+        radius = tank_size[0] * 0.2173913043
+
+        return Bullet(start_pos, start_vel, radius)
 
     def turn_turret(self, angle):
         self.direction += angle
+        if self.direction <= 0:
+            self.direction = 359
+        elif self.direction >= 360:
+            self.direction = 1
 
     def add_to_space(self, space):
         space.add(self.body, self.shape)
 
-    def update_rect(self):
+    def update(self):
         pos = self.body.position
         size = self.vertices[2]
+
         self.rect = (pos[0], pos[1], size[0], size[1])
+
+        self.turret_start_pos = (
+            self.body.position[0] + size[0] / 2,
+            self.body.position[1]
+        )
+
+        self.turret_end_pos = (
+            sin(rad(self.direction)) * self.turret_size +
+            self.turret_start_pos[0],
+            cos(rad(self.direction)) *
+            self.turret_size + self.turret_start_pos[1]
+        )
+
+        self.fire_timer += 1
 
     def render(self, window):
         # Render Body
         pygame.draw.rect(window, self.color, self.rect)
 
         # Render Turret
+        pos = self.body.position
         size = self.vertices[2]
+        pygame.draw.line(window, (100, 100, 100), self.turret_start_pos,
+                         self.turret_end_pos, ceil(size[0] * 0.2))
 
-        start_pos = (
-            self.body.position[0] + size[0] / 2,
-            self.body.position[1]
-        )
-
-        end_pos = (
-            sin(radians(self.direction)) * self.turret_size + start_pos[0],
-            cos(radians(self.direction)) * self.turret_size + start_pos[1]
-        )
-        pygame.draw.line(window, (100, 100, 100), start_pos, end_pos, ceil(size[0]*0.1388888889))
+        # Render Stats
+        angle_pos = (pos[0] + size[0]/2, pos[1] + size[1]*2)
+        text(window, str(self.direction) + "˚", 25, (255, 255, 255), angle_pos)
