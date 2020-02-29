@@ -33,7 +33,7 @@ class Bullet:
     def update(self):
         pos = self.body.position
         radius = self.shape.radius
-        self.rect = (pos[0] - radius, pos[1] - radius, radius * 2, radius * 2)
+        self.rect = pygame.Rect(pos[0] - radius, pos[1] - radius, radius * 2, radius * 2)
         self.alive_time += 1
 
     def add_to_space(self, space):

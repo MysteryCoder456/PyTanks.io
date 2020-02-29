@@ -42,7 +42,7 @@ class Tank:
             self.direction = 135
         elif team == "blue":
             self.color = (40, 40, 200)
-            self.direction = -135
+            self.direction = 225
         else:
             self.color = (200, 200, 200)
             self.direction = 0
@@ -50,13 +50,13 @@ class Tank:
         self.turret_size = width * 0.6944444444
         self.score = 0
         self.fire_timer = 0
-        self.fire_power = 100  # in percentage
+        self.fire_power = 50  # in percentage
 
         self.update()
 
     def shoot(self):
         tank_size = self.vertices[2]
-        bullet_speed = self.fire_power * 8.5
+        bullet_speed = self.fire_power * 12
 
         start_pos = self.turret_end_pos
         start_vel = (
@@ -78,10 +78,15 @@ class Tank:
         space.add(self.body, self.shape)
 
     def update(self):
+        if self.fire_power < 0:
+            self.fire_power = 0
+        elif self.fire_power > 100:
+            self.fire_power = 100
+
         pos = self.body.position
         size = self.vertices[2]
 
-        self.rect = (pos[0], pos[1], size[0], size[1])
+        self.rect = pygame.Rect(pos[0], pos[1], size[0], size[1])
 
         self.turret_start_pos = (
             self.body.position[0] + size[0] / 2,
@@ -109,4 +114,7 @@ class Tank:
 
         # Render Stats
         angle_pos = (pos[0] + size[0]/2, pos[1] + size[1]*2)
-        text(window, str(self.direction) + "˚", 25, (255, 255, 255), angle_pos)
+        text(window, str(int(self.direction)) + "˚", 25, (255, 255, 255), angle_pos)
+
+        power_pos = (angle_pos[0], angle_pos[1] + size[1] * 2)
+        text(window, str(int(self.fire_power)), 25, (255, 255, 255), power_pos)
